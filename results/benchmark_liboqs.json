@@ -1,0 +1,12 @@
+{
+  "implementation": "liboqs",
+  "liboqs_version": "0.16.0",
+  "results": [
+    {"algorithm": "ML-KEM-512", "type": "kem","pk_bytes": 800, "sk_bytes": 1632, "ct_bytes": 768, "ss_bytes": 32, "correctness": "PASS", "keygen_us": {"median": 10.036, "mean": 10.033, "min": 9.273, "max": 10.555}, "encaps_us": {"median": 10.503, "mean": 10.725, "min": 10.330, "max": 11.336}, "decaps_us": {"median": 12.596, "mean": 12.720, "min": 12.234, "max": 13.524}},
+    {"algorithm": "ML-KEM-768", "type": "kem","pk_bytes": 1184, "sk_bytes": 2400, "ct_bytes": 1088, "ss_bytes": 32, "correctness": "PASS", "keygen_us": {"median": 15.358, "mean": 16.347, "min": 14.872, "max": 22.205}, "encaps_us": {"median": 16.154, "mean": 16.261, "min": 15.737, "max": 16.911}, "decaps_us": {"median": 19.673, "mean": 20.238, "min": 18.841, "max": 24.911}},
+    {"algorithm": "ML-KEM-1024", "type": "kem","pk_bytes": 1568, "sk_bytes": 3168, "ct_bytes": 1568, "ss_bytes": 32, "correctness": "PASS", "keygen_us": {"median": 20.433, "mean": 20.463, "min": 19.625, "max": 21.574}, "encaps_us": {"median": 20.863, "mean": 21.424, "min": 20.648, "max": 23.299}, "decaps_us": {"median": 26.193, "mean": 26.504, "min": 25.794, "max": 27.978}},
+    {"algorithm": "ML-DSA-44", "type": "sig","pk_bytes": 1312, "sk_bytes": 2560, "sig_bytes": 2420, "correctness": "PASS", "keygen_us": {"median": 28.804, "mean": 28.971, "min": 28.483, "max": 29.788}, "sign_us": {"median": 99.789, "mean": 100.933, "min": 97.381, "max": 106.864}, "verify_us": {"median": 32.251, "mean": 32.370, "min": 32.147, "max": 32.873}},
+    {"algorithm": "ML-DSA-65", "type": "sig","pk_bytes": 1952, "sk_bytes": 4032, "sig_bytes": 3309, "correctness": "PASS", "keygen_us": {"median": 48.512, "mean": 49.195, "min": 47.669, "max": 52.214}, "sign_us": {"median": 153.006, "mean": 152.702, "min": 145.721, "max": 161.590}, "verify_us": {"median": 54.167, "mean": 53.580, "min": 50.374, "max": 55.495}},
+    {"algorithm": "ML-DSA-87", "type": "sig","pk_bytes": 2592, "sk_bytes": 4896, "sig_bytes": 4627, "correctness": "PASS", "keygen_us": {"median": 69.719, "mean": 70.595, "min": 69.417, "max": 74.337}, "sign_us": {"median": 172.875, "mean": 173.478, "min": 169.027, "max": 178.267}, "verify_us": {"median": 75.730, "mean": 78.847, "min": 69.841, "max": 94.148}}
+  ]
+}
