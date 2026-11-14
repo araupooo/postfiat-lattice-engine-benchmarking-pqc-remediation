@@ -1,0 +1,34 @@
+Lattice engine benchmarking and core-protocol PQC remediation assessment
+Host: AMD EPYC 9D25 126-Core Processor
+OS: Linux htch-runtime 7.0.0-44-generic #1 SMP PREEMPT_DYNAMIC Fri Nov  6 01:23:31 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+Toolchain: gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, cmake version 3.28.3, Python 3.12.3, OpenSSL 3.0.13 30 Jan 2024 (Library: OpenSSL 3.0.13 30 Jan 2024)
+liboqs 0.16.0 (minimal build: ML-KEM + ML-DSA only; x86_64/AVX2 path, dispatch probe AVX2=1 BMI2=1 POPCNT=1)
+PQClean commit 0586a824fc0d49df0b6b6e9179d8d15d06d0974f (clean reference implementations)
+Correctness: 14/14 checks PASS (6 liboqs + 6 PQClean + 2 OpenSSL classical)
+Sizes: all 12 lattice size rows MATCH FIPS 203 Table 3 / FIPS 204 Table 2
+
+Median microseconds per operation (liboqs | PQClean clean):
+  ML-KEM-512 keygen 10.036 | 59.669; encaps 10.503 | 66.205; decaps 12.596 | 88.613
+  ML-KEM-768 keygen 15.358 | 98.814; encaps 16.154 | 105.639; decaps 19.673 | 133.537
+  ML-KEM-1024 keygen 20.433 | 155.950; encaps 20.863 | 158.274; decaps 26.193 | 195.017
+  ML-DSA-44 keygen 28.804 | 143.221; sign 99.789 | 623.758; verify 32.251 | 153.656
+  ML-DSA-65 keygen 48.512 | 281.217; sign 153.006 | 991.558; verify 54.167 | 247.327
+  ML-DSA-87 keygen 69.719 | 407.094; sign 172.875 | 1275.185; verify 75.730 | 419.090
+  ECDSA-secp256k1 (OpenSSL, measured): keygen 612.995; sign 588.125; verify 558.113
+  Ed25519 (OpenSSL, measured): keygen 61.706; sign 56.787; verify 143.639
+
+Consensus-path cost per ledger per node (N=66, 2 proposal rounds, 198 verifies):
+  classical (ECDSA-secp256k1, OpenSSL, measured): verify 110.506 ms/ledger (2.763% of a 4 s close), 20592 signature-related bytes/ledger, 444787200 bytes/day at 4 s close
+  ML-DSA-44 (liboqs, measured): verify 6.386 ms/ledger (0.160% of a 4 s close), 738936 signature-related bytes/ledger, 15961017600 bytes/day at 4 s close
+  ML-DSA-44 (PQClean clean, measured): verify 30.424 ms/ledger (0.761% of a 4 s close), 738936 signature-related bytes/ledger, 15961017600 bytes/day at 4 s close
+  ML-DSA-65 (liboqs, measured): verify 10.725 ms/ledger (0.268% of a 4 s close), 1041678 signature-related bytes/ledger, 22500244800 bytes/day at 4 s close
+  ML-DSA-65 (PQClean clean, measured): verify 48.971 ms/ledger (1.224% of a 4 s close), 1041678 signature-related bytes/ledger, 22500244800 bytes/day at 4 s close
+  ML-DSA-87 (liboqs, measured): verify 14.995 ms/ledger (0.375% of a 4 s close), 1429362 signature-related bytes/ledger, 30874219200 bytes/day at 4 s close
+  ML-DSA-87 (PQClean clean, measured): verify 82.980 ms/ledger (2.074% of a 4 s close), 1429362 signature-related bytes/ledger, 30874219200 bytes/day at 4 s close
+  dual classical + ML-DSA-65 (liboqs, measured): verify 121.231 ms/ledger (3.031% of a 4 s close), 1062270 signature-related bytes/ledger, 22945032000 bytes/day at 4 s close
+  dual classical + ML-DSA-65 (PQClean clean, measured): verify 159.477 ms/ledger (3.987% of a 4 s close), 1062270 signature-related bytes/ledger, 22945032000 bytes/day at 4 s close
+
+TLS handshake ML-KEM-768 cost (keygen + encaps + decaps, medians): liboqs 51.185 us, PQClean clean 337.990 us
+
+OpenSSL 3.5 (third implementation): NOT MEASURED — see claim_evidence_index.md.
+Reproduction: bash run_all.sh (offline, from the vendored results JSON).
