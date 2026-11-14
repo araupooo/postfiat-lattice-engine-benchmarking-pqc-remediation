@@ -1,0 +1,8 @@
+{
+  "implementation": "openssl-classical",
+  "openssl_version": "OpenSSL 3.0.13 30 Jan 2024",
+  "results": [
+    {"algorithm": "ECDSA-secp256k1", "type": "sig","pk_bytes": 33, "sk_bytes": 32, "sig_bytes": 71, "correctness": "PASS", "keygen_us": {"median": 612.995, "mean": 622.630, "min": 576.960, "max": 683.988}, "sign_us": {"median": 588.125, "mean": 591.196, "min": 584.239, "max": 601.146}, "verify_us": {"median": 558.113, "mean": 560.905, "min": 518.620, "max": 593.751}},
+    {"algorithm": "Ed25519", "type": "sig","pk_bytes": 32, "sk_bytes": 32, "sig_bytes": 64, "correctness": "PASS", "keygen_us": {"median": 61.706, "mean": 64.253, "min": 57.416, "max": 72.185}, "sign_us": {"median": 56.787, "mean": 56.608, "min": 54.196, "max": 58.210}, "verify_us": {"median": 143.639, "mean": 146.643, "min": 139.955, "max": 155.990}}
+  ]
+}

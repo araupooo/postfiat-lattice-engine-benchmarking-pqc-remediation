@@ -1,0 +1,133 @@
+{
+  "model": "derived arithmetic from measured medians (this pack)",
+  "network_inputs_source": "sibling consensus-signature migration pack cost_model.py v1.0.0 (N=66 validators, live testnet snapshot 2026-11-13; 2 proposal rounds per ledger \u2014 assumption A3; nominal 4 s close; 3.03 s measured mean close from the sibling amendment-state probe)",
+  "validators_n": 66,
+  "proposal_rounds_per_ledger": 2,
+  "verifies_per_ledger_per_node": 198,
+  "close_seconds_nominal": 4,
+  "close_seconds_measured_mean": 3.03,
+  "per_ledger_per_node": [
+    {
+      "scenario": "classical (ECDSA-secp256k1, OpenSSL, measured)",
+      "verify_us_per_op_median": 558.113,
+      "verifies_per_ledger": 198,
+      "verify_ms_per_ledger": 110.506,
+      "pct_of_4s_close": 2.763,
+      "sig_bytes_per_ledger": 20592,
+      "sig_bytes_per_day_4s_close": 444787200,
+      "sig_bytes_per_day_3p03s_close": 587177821,
+      "sign_us_per_op_median": 588.125,
+      "sign_ms_per_ledger_3_signs": 1.764
+    },
+    {
+      "scenario": "ML-DSA-44 (liboqs, measured)",
+      "verify_us_per_op_median": 32.251,
+      "verifies_per_ledger": 198,
+      "verify_ms_per_ledger": 6.386,
+      "pct_of_4s_close": 0.16,
+      "sig_bytes_per_ledger": 738936,
+      "sig_bytes_per_day_4s_close": 15961017600,
+      "sig_bytes_per_day_3p03s_close": 21070650297,
+      "sign_us_per_op_median": 99.789,
+      "sign_ms_per_ledger_3_signs": 0.299
+    },
+    {
+      "scenario": "ML-DSA-44 (PQClean clean, measured)",
+      "verify_us_per_op_median": 153.656,
+      "verifies_per_ledger": 198,
+      "verify_ms_per_ledger": 30.424,
+      "pct_of_4s_close": 0.761,
+      "sig_bytes_per_ledger": 738936,
+      "sig_bytes_per_day_4s_close": 15961017600,
+      "sig_bytes_per_day_3p03s_close": 21070650297,
+      "sign_us_per_op_median": 623.758,
+      "sign_ms_per_ledger_3_signs": 1.871
+    },
+    {
+      "scenario": "ML-DSA-65 (liboqs, measured)",
+      "verify_us_per_op_median": 54.167,
+      "verifies_per_ledger": 198,
+      "verify_ms_per_ledger": 10.725,
+      "pct_of_4s_close": 0.268,
+      "sig_bytes_per_ledger": 1041678,
+      "sig_bytes_per_day_4s_close": 22500244800,
+      "sig_bytes_per_day_3p03s_close": 29703293465,
+      "sign_us_per_op_median": 153.006,
+      "sign_ms_per_ledger_3_signs": 0.459
+    },
+    {
+      "scenario": "ML-DSA-65 (PQClean clean, measured)",
+      "verify_us_per_op_median": 247.327,
+      "verifies_per_ledger": 198,
+      "verify_ms_per_ledger": 48.971,
+      "pct_of_4s_close": 1.224,
+      "sig_bytes_per_ledger": 1041678,
+      "sig_bytes_per_day_4s_close": 22500244800,
+      "sig_bytes_per_day_3p03s_close": 29703293465,
+      "sign_us_per_op_median": 991.558,
+      "sign_ms_per_ledger_3_signs": 2.975
+    },
+    {
+      "scenario": "ML-DSA-87 (liboqs, measured)",
+      "verify_us_per_op_median": 75.73,
+      "verifies_per_ledger": 198,
+      "verify_ms_per_ledger": 14.995,
+      "pct_of_4s_close": 0.375,
+      "sig_bytes_per_ledger": 1429362,
+      "sig_bytes_per_day_4s_close": 30874219200,
+      "sig_bytes_per_day_3p03s_close": 40758045148,
+      "sign_us_per_op_median": 172.875,
+      "sign_ms_per_ledger_3_signs": 0.519
+    },
+    {
+      "scenario": "ML-DSA-87 (PQClean clean, measured)",
+      "verify_us_per_op_median": 419.09,
+      "verifies_per_ledger": 198,
+      "verify_ms_per_ledger": 82.98,
+      "pct_of_4s_close": 2.074,
+      "sig_bytes_per_ledger": 1429362,
+      "sig_bytes_per_day_4s_close": 30874219200,
+      "sig_bytes_per_day_3p03s_close": 40758045148,
+      "sign_us_per_op_median": 1275.185,
+      "sign_ms_per_ledger_3_signs": 3.826
+    },
+    {
+      "scenario": "dual classical + ML-DSA-65 (liboqs, measured)",
+      "verify_us_per_op_median": 612.28,
+      "verifies_per_ledger": 198,
+      "verify_ms_per_ledger": 121.231,
+      "pct_of_4s_close": 3.031,
+      "sig_bytes_per_ledger": 1062270,
+      "sig_bytes_per_day_4s_close": 22945032000,
+      "sig_bytes_per_day_3p03s_close": 30290471287,
+      "sign_us_per_op_median": 741.131,
+      "sign_ms_per_ledger_3_signs": 2.223
+    },
+    {
+      "scenario": "dual classical + ML-DSA-65 (PQClean clean, measured)",
+      "verify_us_per_op_median": 805.44,
+      "verifies_per_ledger": 198,
+      "verify_ms_per_ledger": 159.477,
+      "pct_of_4s_close": 3.987,
+      "sig_bytes_per_ledger": 1062270,
+      "sig_bytes_per_day_4s_close": 22945032000,
+      "sig_bytes_per_day_3p03s_close": 30290471287,
+      "sign_us_per_op_median": 1579.683,
+      "sign_ms_per_ledger_3_signs": 4.739
+    }
+  ],
+  "tls_handshake_mlkem768_us": {
+    "liboqs": {
+      "keygen_us": 15.358,
+      "encaps_us": 16.154,
+      "decaps_us": 19.673,
+      "handshake_kem_us": 51.185
+    },
+    "pqclean": {
+      "keygen_us": 98.814,
+      "encaps_us": 105.639,
+      "decaps_us": 133.537,
+      "handshake_kem_us": 337.99
+    }
+  }
+}

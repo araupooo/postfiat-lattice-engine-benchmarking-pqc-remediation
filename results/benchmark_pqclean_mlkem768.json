@@ -1,0 +1,7 @@
+{
+  "implementation": "pqclean",
+  "pqclean_commit": "0586a824fc0d49df0b6b6e9179d8d15d06d0974f",
+  "results": [
+    {"algorithm": "ML-KEM-768", "type": "kem","pk_bytes": 1184, "sk_bytes": 2400, "ct_bytes": 1088, "ss_bytes": 32, "correctness": "PASS", "keygen_us": {"median": 98.814, "mean": 101.593, "min": 98.280, "max": 115.666}, "encaps_us": {"median": 105.639, "mean": 108.951, "min": 104.445, "max": 122.800}, "decaps_us": {"median": 133.537, "mean": 134.593, "min": 132.321, "max": 138.858}}
+  ]
+}

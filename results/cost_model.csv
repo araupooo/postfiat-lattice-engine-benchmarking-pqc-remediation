@@ -1,0 +1,10 @@
+scenario,verify_us_per_op_median,verifies_per_ledger,verify_ms_per_ledger,pct_of_4s_close,sig_bytes_per_ledger,sig_bytes_per_day_4s_close,sig_bytes_per_day_3p03s_close,sign_us_per_op_median,sign_ms_per_ledger_3_signs
+"classical (ECDSA-secp256k1, OpenSSL, measured)",558.113,198,110.506,2.763,20592,444787200,587177821,588.125,1.764
+"ML-DSA-44 (liboqs, measured)",32.251,198,6.386,0.16,738936,15961017600,21070650297,99.789,0.299
+"ML-DSA-44 (PQClean clean, measured)",153.656,198,30.424,0.761,738936,15961017600,21070650297,623.758,1.871
+"ML-DSA-65 (liboqs, measured)",54.167,198,10.725,0.268,1041678,22500244800,29703293465,153.006,0.459
+"ML-DSA-65 (PQClean clean, measured)",247.327,198,48.971,1.224,1041678,22500244800,29703293465,991.558,2.975
+"ML-DSA-87 (liboqs, measured)",75.73,198,14.995,0.375,1429362,30874219200,40758045148,172.875,0.519
+"ML-DSA-87 (PQClean clean, measured)",419.09,198,82.98,2.074,1429362,30874219200,40758045148,1275.185,3.826
+"dual classical + ML-DSA-65 (liboqs, measured)",612.28,198,121.231,3.031,1062270,22945032000,30290471287,741.131,2.223
+"dual classical + ML-DSA-65 (PQClean clean, measured)",805.44,198,159.477,3.987,1062270,22945032000,30290471287,1579.683,4.739

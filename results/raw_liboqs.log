@@ -1,0 +1,42 @@
+liboqs version: 0.16.0
+cpu dispatch probe (liboqs OQS_CPU_has_extension): AVX2=1 BMI2=1 POPCNT=1 AVX512=1
+liboqs selects its x86_64 (AVX2) ML-KEM/ML-DSA path when AVX2+BMI2+POPCNT are all present (src/kem/ml_kem/kem_ml_kem_512.c); otherwise the ref path.
+message: 64-byte fixed string (see source); ML-DSA signing is hedged/randomized per FIPS 204
+--- ML-KEM-512 (liboqs) ---
+  sizes: pk=800 sk=1632 ct=768 ss=32
+  correctness: PASS (encap/decap match, tampered ct rejected to a different secret)
+  keygen       n=2000  median=   10.036 us/op  mean=   10.033  min=    9.273  max=   10.555  ops/s=99644.8
+  encaps       n=2000  median=   10.503 us/op  mean=   10.725  min=   10.330  max=   11.336  ops/s=95213.3
+  decaps       n=2000  median=   12.596 us/op  mean=   12.720  min=   12.234  max=   13.524  ops/s=79390.6
+--- ML-KEM-768 (liboqs) ---
+  sizes: pk=1184 sk=2400 ct=1088 ss=32
+  correctness: PASS (encap/decap match, tampered ct rejected to a different secret)
+  keygen       n=2000  median=   15.358 us/op  mean=   16.347  min=   14.872  max=   22.205  ops/s=65112.4
+  encaps       n=2000  median=   16.154 us/op  mean=   16.261  min=   15.737  max=   16.911  ops/s=61905.2
+  decaps       n=2000  median=   19.673 us/op  mean=   20.238  min=   18.841  max=   24.911  ops/s=50831.0
+--- ML-KEM-1024 (liboqs) ---
+  sizes: pk=1568 sk=3168 ct=1568 ss=32
+  correctness: PASS (encap/decap match, tampered ct rejected to a different secret)
+  keygen       n=2000  median=   20.433 us/op  mean=   20.463  min=   19.625  max=   21.574  ops/s=48940.5
+  encaps       n=2000  median=   20.863 us/op  mean=   21.424  min=   20.648  max=   23.299  ops/s=47931.7
+  decaps       n=2000  median=   26.193 us/op  mean=   26.504  min=   25.794  max=   27.978  ops/s=38178.8
+--- ML-DSA-44 (liboqs) ---
+  sizes: pk=1312 sk=2560 sig=2420
+  correctness: PASS (sign/verify round-trip, tampered signature rejected; sig_len=2420)
+  keygen       n=1000  median=   28.804 us/op  mean=   28.971  min=   28.483  max=   29.788  ops/s=34717.3
+  sign         n=1000  median=   99.789 us/op  mean=  100.933  min=   97.381  max=  106.864  ops/s=10021.2
+  verify       n=1000  median=   32.251 us/op  mean=   32.370  min=   32.147  max=   32.873  ops/s=31007.3
+--- ML-DSA-65 (liboqs) ---
+  sizes: pk=1952 sk=4032 sig=3309
+  correctness: PASS (sign/verify round-trip, tampered signature rejected; sig_len=3309)
+  keygen       n=1000  median=   48.512 us/op  mean=   49.195  min=   47.669  max=   52.214  ops/s=20613.5
+  sign         n=1000  median=  153.006 us/op  mean=  152.702  min=  145.721  max=  161.590  ops/s=6535.7
+  verify       n=1000  median=   54.167 us/op  mean=   53.580  min=   50.374  max=   55.495  ops/s=18461.3
+--- ML-DSA-87 (liboqs) ---
+  sizes: pk=2592 sk=4896 sig=4627
+  correctness: PASS (sign/verify round-trip, tampered signature rejected; sig_len=4627)
+  keygen       n=1000  median=   69.719 us/op  mean=   70.595  min=   69.417  max=   74.337  ops/s=14343.3
+  sign         n=1000  median=  172.875 us/op  mean=  173.478  min=  169.027  max=  178.267  ops/s=5784.5
+  verify       n=1000  median=   75.730 us/op  mean=   78.847  min=   69.841  max=   94.148  ops/s=13204.7
+json written to results/benchmark_liboqs.json
+RESULT: PASS (exit 0)

@@ -1,0 +1,16 @@
+OpenSSL version: OpenSSL 3.0.13 30 Jan 2024
+message: 64-byte fixed string (same string as the lattice drivers)
+--- ECDSA secp256k1 (OpenSSL) ---
+  sizes: pk=33 (compressed) sk=32 sig=DER, at most 72
+  correctness: PASS (sign/verify round-trip over 32-byte digest, tampered signature rejected; sig_len=71, DER, <= 72)
+  keygen       n=1000  median=  612.995 us/op  mean=  622.630  min=  576.960  max=  683.988  ops/s=1631.3
+  sign         n=2000  median=  588.125 us/op  mean=  591.196  min=  584.239  max=  601.146  ops/s=1700.3
+  verify       n=2000  median=  558.113 us/op  mean=  560.905  min=  518.620  max=  593.751  ops/s=1791.8
+--- Ed25519 (OpenSSL) ---
+  sizes: pk=32 sk=32 sig=64
+  correctness: PASS (sign/verify round-trip over 64-byte message, tampered signature rejected; sig_len=64)
+  keygen       n=1000  median=   61.706 us/op  mean=   64.253  min=   57.416  max=   72.185  ops/s=16206.0
+  sign         n=2000  median=   56.787 us/op  mean=   56.608  min=   54.196  max=   58.210  ops/s=17609.6
+  verify       n=2000  median=  143.639 us/op  mean=  146.643  min=  139.955  max=  155.990  ops/s=6961.9
+json written to results/benchmark_classical.json
+RESULT: PASS (exit 0)

@@ -1,0 +1,54 @@
+--- ML-KEM-512 ---
+--- ML-KEM-512 (PQClean clean) ---
+  sizes: pk=800 sk=1632 ct=768 ss=32
+  correctness: PASS (enc/dec match, tampered ct rejected to a different secret)
+  keygen       n=2000  median=   59.669 us/op  mean=   59.773  min=   58.614  max=   61.294  ops/s=16759.1
+  encaps       n=2000  median=   66.205 us/op  mean=   66.425  min=   65.957  max=   67.180  ops/s=15104.7
+  decaps       n=2000  median=   88.613 us/op  mean=   88.668  min=   87.910  max=   89.326  ops/s=11285.1
+json written to results/benchmark_pqclean_mlkem512.json
+RESULT: PASS (exit 0)
+--- ML-KEM-768 ---
+--- ML-KEM-768 (PQClean clean) ---
+  sizes: pk=1184 sk=2400 ct=1088 ss=32
+  correctness: PASS (enc/dec match, tampered ct rejected to a different secret)
+  keygen       n=2000  median=   98.814 us/op  mean=  101.593  min=   98.280  max=  115.666  ops/s=10120.0
+  encaps       n=2000  median=  105.639 us/op  mean=  108.951  min=  104.445  max=  122.800  ops/s=9466.2
+  decaps       n=2000  median=  133.537 us/op  mean=  134.593  min=  132.321  max=  138.858  ops/s=7488.6
+json written to results/benchmark_pqclean_mlkem768.json
+RESULT: PASS (exit 0)
+--- ML-KEM-1024 ---
+--- ML-KEM-1024 (PQClean clean) ---
+  sizes: pk=1568 sk=3168 ct=1568 ss=32
+  correctness: PASS (enc/dec match, tampered ct rejected to a different secret)
+  keygen       n=2000  median=  155.950 us/op  mean=  158.198  min=  153.881  max=  170.830  ops/s=6412.3
+  encaps       n=2000  median=  158.274 us/op  mean=  160.878  min=  154.810  max=  172.692  ops/s=6318.2
+  decaps       n=2000  median=  195.017 us/op  mean=  197.055  min=  191.716  max=  210.682  ops/s=5127.8
+json written to results/benchmark_pqclean_mlkem1024.json
+RESULT: PASS (exit 0)
+--- ML-DSA-44 ---
+--- ML-DSA-44 (PQClean clean) ---
+  sizes: pk=1312 sk=2560 sig=2420
+  correctness: PASS (sign/verify round-trip, tampered signature rejected; sig_len=2420)
+  keygen       n=1000  median=  143.221 us/op  mean=  143.226  min=  140.297  max=  149.405  ops/s=6982.2
+  sign         n=1000  median=  623.758 us/op  mean=  627.630  min=  606.720  max=  663.603  ops/s=1603.2
+  verify       n=1000  median=  153.656 us/op  mean=  155.525  min=  151.456  max=  166.906  ops/s=6508.1
+json written to results/benchmark_pqclean_mldsa44.json
+RESULT: PASS (exit 0)
+--- ML-DSA-65 ---
+--- ML-DSA-65 (PQClean clean) ---
+  sizes: pk=1952 sk=4032 sig=3309
+  correctness: PASS (sign/verify round-trip, tampered signature rejected; sig_len=3309)
+  keygen       n=1000  median=  281.217 us/op  mean=  291.163  min=  265.589  max=  325.199  ops/s=3556.0
+  sign         n=1000  median=  991.558 us/op  mean= 1002.060  min=  967.178  max= 1035.768  ops/s=1008.5
+  verify       n=1000  median=  247.327 us/op  mean=  246.741  min=  242.520  max=  253.927  ops/s=4043.2
+json written to results/benchmark_pqclean_mldsa65.json
+RESULT: PASS (exit 0)
+--- ML-DSA-87 ---
+--- ML-DSA-87 (PQClean clean) ---
+  sizes: pk=2592 sk=4896 sig=4627
+  correctness: PASS (sign/verify round-trip, tampered signature rejected; sig_len=4627)
+  keygen       n=1000  median=  407.094 us/op  mean=  410.051  min=  396.046  max=  436.303  ops/s=2456.4
+  sign         n=1000  median= 1275.185 us/op  mean= 1288.959  min= 1243.186  max= 1361.490  ops/s=784.2
+  verify       n=1000  median=  419.090 us/op  mean=  421.912  min=  406.138  max=  439.650  ops/s=2386.1
+json written to results/benchmark_pqclean_mldsa87.json
+RESULT: PASS (exit 0)

@@ -1,0 +1,7 @@
+{
+  "implementation": "pqclean",
+  "pqclean_commit": "0586a824fc0d49df0b6b6e9179d8d15d06d0974f",
+  "results": [
+    {"algorithm": "ML-DSA-44", "type": "sig","pk_bytes": 1312, "sk_bytes": 2560, "sig_bytes": 2420, "correctness": "PASS", "keygen_us": {"median": 143.221, "mean": 143.226, "min": 140.297, "max": 149.405}, "sign_us": {"median": 623.758, "mean": 627.630, "min": 606.720, "max": 663.603}, "verify_us": {"median": 153.656, "mean": 155.525, "min": 151.456, "max": 166.906}}
+  ]
+}
