@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lattice Engine Benchmarking and Core-Protocol PQC Remediation Assessment</title>
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  max-width:960px;margin:2em auto;padding:0 1em;color:#111;line-height:1.5}
+h1{font-size:1.6em}h2{font-size:1.25em;margin-top:1.5em}
+table{border-collapse:collapse;width:100%;margin:1em 0}
+th,td{border:1px solid #ccc;padding:.35em .6em;text-align:left;
+  font-size:.92em}th{background:#f0f0f0}
+code{background:#f4f4f4;padding:0 .2em}
+.callout{background:#f7f3e8;border-left:4px solid #b58900;padding:.7em 1em}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85em;
+  white-space:pre-wrap;word-break:break-word;background:#f8f8f8;
+  border:1px solid #ddd;padding:1em;overflow-x:auto}
+</style>
+</head>
+<body>
+<h1>Lattice Engine Benchmarking and Core-Protocol PQC Remediation Assessment</h1>
+<p>Measured ML-KEM and ML-DSA costs across every parameter set, from two
+independent implementations on one fixed host and toolchain, mapped to
+the core-protocol call sites in postfiatd (pinned commit
+<code>0085a1ff885d6a446369cf73a4430f75af22be55</code>), with a
+remediation assessment for the post-quantum migration.</p>
+
+<div class="callout"><strong>Headline finding.</strong> On this host the
+classical scheme is the slow one. ECDSA-secp256k1 verification — the
+operation the consensus path performs 198 times per ledger per node —
+costs <strong>558.113 &micro;s (median, OpenSSL 3.0.13, measured)</strong>,
+while ML-DSA-65 verification costs <strong>54.167 &micro;s (liboqs,
+measured)</strong> — about 10&times; faster. The migration's cost is
+therefore bandwidth, not CPU: a dual classical + ML-DSA-65 validation
+carries 51.587&times; the signature-related bytes of a classical one per
+ledger. ML-KEM-768 for a TLS handshake (keygen + encaps + decaps)
+costs 51.185 &micro;s (liboqs) / 337.990 &micro;s (PQClean clean).</div>
+
+<h2>Host and toolchain</h2>
+<table>
+<tr><th>Item</th><th>Value</th></tr>
+<tr><td>CPU</td><td>AMD EPYC 9D25 126-Core Processor (4 cores)</td></tr>
+<tr><td>OS / kernel</td><td>Linux htch-runtime 7.0.0-44-generic #1 SMP PREEMPT_DYNAMIC Fri Nov  6 01:23:31 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux</td></tr>
+<tr><td>Compiler</td><td>gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0</td></tr>
+<tr><td>liboqs</td><td>0.16.0 — minimal build (ML-KEM + ML-DSA only); x86_64/AVX2 path (dispatch probe AVX2=1 BMI2=1 POPCNT=1)</td></tr>
+<tr><td>PQClean</td><td>commit 0586a824fc0d49df0b6b6e9179d8d15d06d0974f — portable-C <code>clean</code> reference implementations</td></tr>
+<tr><td>OpenSSL (classical baseline)</td><td>OpenSSL 3.0.13 30 Jan 2024 (Library: OpenSSL 3.0.13 30 Jan 2024)</td></tr>
+<tr><td>OpenSSL 3.5 (third implementation)</td><td>NOT MEASURED — see claim index</td></tr>
+</table>
+
+<h2>Timing table (median &micro;s per operation)</h2>
+<p>Each operation was timed in a tight loop (2,000 iterations for
+ML-KEM, 1,000 for ML-DSA and classical keygen, 2,000 for classical
+sign/verify), repeated 7 times; the table shows the median. liboqs
+runs its optimized x86_64 (AVX2) path; PQClean <code>clean</code> is
+portable C — the ratio column compares an optimized implementation
+against a reference, not two equals. Full statistics (mean/min/max)
+are in <code>results/timing_table.csv</code>; unedited raw logs are
+<code>results/raw_liboqs.log</code>, <code>results/raw_pqclean.log</code>,
+<code>results/raw_classical.log</code>.</p>
+<table>
+<tr><th>Algorithm</th><th>Operation</th><th>liboqs median (&micro;s)</th>
+<th>PQClean median (&micro;s)</th><th>PQClean / liboqs</th><th>OpenSSL median (&micro;s)</th></tr>
+<tr><td>ML-KEM-512</td><td>keygen</td><td>10.036</td><td>59.669</td><td>5.95</td><td>-</td></tr>
+<tr><td>ML-KEM-512</td><td>encaps</td><td>10.503</td><td>66.205</td><td>6.30</td><td>-</td></tr>
+<tr><td>ML-KEM-512</td><td>decaps</td><td>12.596</td><td>88.613</td><td>7.04</td><td>-</td></tr>
+<tr><td>ML-KEM-768</td><td>keygen</td><td>15.358</td><td>98.814</td><td>6.43</td><td>-</td></tr>
+<tr><td>ML-KEM-768</td><td>encaps</td><td>16.154</td><td>105.639</td><td>6.54</td><td>-</td></tr>
+<tr><td>ML-KEM-768</td><td>decaps</td><td>19.673</td><td>133.537</td><td>6.79</td><td>-</td></tr>
+<tr><td>ML-KEM-1024</td><td>keygen</td><td>20.433</td><td>155.950</td><td>7.63</td><td>-</td></tr>
+<tr><td>ML-KEM-1024</td><td>encaps</td><td>20.863</td><td>158.274</td><td>7.59</td><td>-</td></tr>
+<tr><td>ML-KEM-1024</td><td>decaps</td><td>26.193</td><td>195.017</td><td>7.45</td><td>-</td></tr>
+<tr><td>ML-DSA-44</td><td>keygen</td><td>28.804</td><td>143.221</td><td>4.97</td><td>-</td></tr>
+<tr><td>ML-DSA-44</td><td>sign</td><td>99.789</td><td>623.758</td><td>6.25</td><td>-</td></tr>
+<tr><td>ML-DSA-44</td><td>verify</td><td>32.251</td><td>153.656</td><td>4.76</td><td>-</td></tr>
+<tr><td>ML-DSA-65</td><td>keygen</td><td>48.512</td><td>281.217</td><td>5.80</td><td>-</td></tr>
+<tr><td>ML-DSA-65</td><td>sign</td><td>153.006</td><td>991.558</td><td>6.48</td><td>-</td></tr>
+<tr><td>ML-DSA-65</td><td>verify</td><td>54.167</td><td>247.327</td><td>4.57</td><td>-</td></tr>
+<tr><td>ML-DSA-87</td><td>keygen</td><td>69.719</td><td>407.094</td><td>5.84</td><td>-</td></tr>
+<tr><td>ML-DSA-87</td><td>sign</td><td>172.875</td><td>1275.185</td><td>7.38</td><td>-</td></tr>
+<tr><td>ML-DSA-87</td><td>verify</td><td>75.730</td><td>419.090</td><td>5.53</td><td>-</td></tr>
+<tr><td>ECDSA-secp256k1</td><td>keygen</td><td>-</td><td>-</td><td>-</td><td>612.995</td></tr>
+<tr><td>ECDSA-secp256k1</td><td>sign</td><td>-</td><td>-</td><td>-</td><td>588.125</td></tr>
+<tr><td>ECDSA-secp256k1</td><td>verify</td><td>-</td><td>-</td><td>-</td><td>558.113</td></tr>
+<tr><td>Ed25519</td><td>keygen</td><td>-</td><td>-</td><td>-</td><td>61.706</td></tr>
+<tr><td>Ed25519</td><td>sign</td><td>-</td><td>-</td><td>-</td><td>56.787</td></tr>
+<tr><td>Ed25519</td><td>verify</td><td>-</td><td>-</td><td>-</td><td>143.639</td></tr>
+</table>
+
+<h2>Size table (bytes)</h2>
+<p>FIPS 203 Table 3 (ML-KEM) and FIPS 204 Table 2 (ML-DSA), both
+published 13 August 2024. Every measured size matches the standard.
+Classical sizes are measured with OpenSSL 3.0.13 on the same host;
+the secp256k1 signature in this run was 71 bytes (DER, at most 72).</p>
+<table>
+<tr><th>Algorithm</th><th>Implementation</th><th>Category</th>
+<th>pk</th><th>sk</th><th>ct / sig</th><th>ss</th><th>Verdict</th></tr>
+<tr><td>ML-KEM-512</td><td>liboqs</td><td>1</td><td>800</td><td>1632</td><td>768</td><td>32</td><td>MATCH</td></tr>
+<tr><td>ML-KEM-512</td><td>pqclean</td><td>1</td><td>800</td><td>1632</td><td>768</td><td>32</td><td>MATCH</td></tr>
+<tr><td>ML-KEM-768</td><td>liboqs</td><td>3</td><td>1184</td><td>2400</td><td>1088</td><td>32</td><td>MATCH</td></tr>
+<tr><td>ML-KEM-768</td><td>pqclean</td><td>3</td><td>1184</td><td>2400</td><td>1088</td><td>32</td><td>MATCH</td></tr>
+<tr><td>ML-KEM-1024</td><td>liboqs</td><td>5</td><td>1568</td><td>3168</td><td>1568</td><td>32</td><td>MATCH</td></tr>
+<tr><td>ML-KEM-1024</td><td>pqclean</td><td>5</td><td>1568</td><td>3168</td><td>1568</td><td>32</td><td>MATCH</td></tr>
+<tr><td>ML-DSA-44</td><td>liboqs</td><td>2</td><td>1312</td><td>2560</td><td>2420</td><td>-</td><td>MATCH</td></tr>
+<tr><td>ML-DSA-44</td><td>pqclean</td><td>2</td><td>1312</td><td>2560</td><td>2420</td><td>-</td><td>MATCH</td></tr>
+<tr><td>ML-DSA-65</td><td>liboqs</td><td>3</td><td>1952</td><td>4032</td><td>3309</td><td>-</td><td>MATCH</td></tr>
+<tr><td>ML-DSA-65</td><td>pqclean</td><td>3</td><td>1952</td><td>4032</td><td>3309</td><td>-</td><td>MATCH</td></tr>
+<tr><td>ML-DSA-87</td><td>liboqs</td><td>5</td><td>2592</td><td>4896</td><td>4627</td><td>-</td><td>MATCH</td></tr>
+<tr><td>ML-DSA-87</td><td>pqclean</td><td>5</td><td>2592</td><td>4896</td><td>4627</td><td>-</td><td>MATCH</td></tr>
+</table>
+
+<h2>Consensus-path cost model (derived)</h2>
+<p>Per ledger per node at N=66 validators, 2 proposal rounds
+(198 signature verifications: 66 validations + 132 proposals),
+nominal 4 s close. Computed from the measured medians above; network
+inputs from the sibling migration pack's cost model. See
+<code>remediation_assessment.md</code> for the full assessment and
+<code>results/cost_model.json</code> for the machine-readable form.</p>
+<table>
+<tr><th>Scenario</th><th>Verify (&micro;s/op)</th><th>Verify (ms/ledger)</th>
+<th>% of 4 s close</th><th>Signature bytes / ledger</th><th>Signature bytes / day</th></tr>
+<tr><td>classical (ECDSA-secp256k1, OpenSSL, measured)</td><td>558.113</td><td>110.506</td><td>2.763</td><td>20592</td><td>444787200</td></tr>
+<tr><td>ML-DSA-44 (liboqs, measured)</td><td>32.251</td><td>6.386</td><td>0.160</td><td>738936</td><td>15961017600</td></tr>
+<tr><td>ML-DSA-44 (PQClean clean, measured)</td><td>153.656</td><td>30.424</td><td>0.761</td><td>738936</td><td>15961017600</td></tr>
+<tr><td>ML-DSA-65 (liboqs, measured)</td><td>54.167</td><td>10.725</td><td>0.268</td><td>1041678</td><td>22500244800</td></tr>
+<tr><td>ML-DSA-65 (PQClean clean, measured)</td><td>247.327</td><td>48.971</td><td>1.224</td><td>1041678</td><td>22500244800</td></tr>
+<tr><td>ML-DSA-87 (liboqs, measured)</td><td>75.730</td><td>14.995</td><td>0.375</td><td>1429362</td><td>30874219200</td></tr>
+<tr><td>ML-DSA-87 (PQClean clean, measured)</td><td>419.090</td><td>82.980</td><td>2.074</td><td>1429362</td><td>30874219200</td></tr>
+<tr><td>dual classical + ML-DSA-65 (liboqs, measured)</td><td>612.280</td><td>121.231</td><td>3.031</td><td>1062270</td><td>22945032000</td></tr>
+<tr><td>dual classical + ML-DSA-65 (PQClean clean, measured)</td><td>805.440</td><td>159.477</td><td>3.987</td><td>1062270</td><td>22945032000</td></tr>
+</table>
+
+<h2>Call-site mapping</h2>
+<p>Validation signing: <code>src/libxrpl/protocol/STValidation.cpp:128-139</code>
+(secp256k1-only verification gate) and
+<code>src/xrpld/app/consensus/RCLConsensus.cpp:241</code> (proposal
+<code>signDigest</code>); the 72-byte proposal cap:
+<code>src/xrpld/app/consensus/RCLCxPeerPos.h:110</code> and
+<code>src/xrpld/overlay/detail/PeerImp.cpp:1791-1799</code>. Key
+generation: <code>src/libxrpl/protocol/SecretKey.cpp:309-327</code>
+(<code>generateSecretKey</code>) via
+<code>src/xrpld/app/misc/detail/ValidatorKeys.cpp:84-85</code>. TLS:
+<code>src/libxrpl/basics/make_SSLContext.cpp:104</code> (cipher list,
+TLS 1.2 minimum, lines 356-357). Full mapping with measured numbers
+in <code>call_sites.md</code>.</p>
+
+<h2>Digest-check output</h2>
+<p>Raw output of <code>bash verify_digests.sh --check</code> (SHA-256
+manifest over every pack file except the manifest itself):</p>
+<pre class="mono">./README.md: OK
+./REPRODUCTION.md: OK
+./build_derived.py: OK
+./call_sites.md: OK
+./claim_evidence_index.md: OK
+./docs/index.html: OK
+./harness/bench_classical.c: OK
+./harness/bench_liboqs.c: OK
+./harness/bench_pqclean.c: OK
+./harness/build_benchmarks.sh: OK
+./harness/run_benchmarks.sh: OK
+./remediation_assessment.md: OK
+./results/benchmark_classical.json: OK
+./results/benchmark_liboqs.json: OK
+./results/benchmark_pqclean.json: OK
+./results/benchmark_pqclean_mldsa44.json: OK
+./results/benchmark_pqclean_mldsa65.json: OK
+./results/benchmark_pqclean_mldsa87.json: OK
+./results/benchmark_pqclean_mlkem1024.json: OK
+./results/benchmark_pqclean_mlkem512.json: OK
+./results/benchmark_pqclean_mlkem768.json: OK
+./results/cost_model.csv: OK
+./results/cost_model.json: OK
+./results/digest_check_output.txt: OK
+./results/environment.json: OK
+./results/raw_classical.log: OK
+./results/raw_liboqs.log: OK
+./results/raw_pqclean.log: OK
+./results/run_log.txt: OK
+./results/size_table.csv: OK
+./results/size_table.md: OK
+./results/summary.txt: OK
+./results/timing_table.csv: OK
+./results/timing_table.md: OK
+./run_all.sh: OK
+./sources.md: OK
+./sources/NIST.FIPS.203.pdf: OK
+./sources/NIST.FIPS.204.pdf: OK
+./verify_digests.sh: OK
+</pre>
+
+<h2>Run-log tail</h2>
+<p>Tail of <code>results/run_log.txt</code> — the raw console log of
+the fresh-copy reproduction run (<code>bash run_all.sh</code>, exit 0):</p>
+<pre class="mono">./README.md: OK
+./build_derived.py: OK
+./call_sites.md: OK
+./claim_evidence_index.md: OK
+./docs/index.html: OK
+./harness/bench_classical.c: OK
+./harness/bench_liboqs.c: OK
+./harness/bench_pqclean.c: OK
+./harness/build_benchmarks.sh: OK
+./harness/run_benchmarks.sh: OK
+./remediation_assessment.md: OK
+./results/benchmark_classical.json: OK
+./results/benchmark_liboqs.json: OK
+./results/benchmark_pqclean.json: OK
+./results/benchmark_pqclean_mldsa44.json: OK
+./results/benchmark_pqclean_mldsa65.json: OK
+./results/benchmark_pqclean_mldsa87.json: OK
+./results/benchmark_pqclean_mlkem1024.json: OK
+./results/benchmark_pqclean_mlkem512.json: OK
+./results/benchmark_pqclean_mlkem768.json: OK
+./results/cost_model.csv: OK
+./results/cost_model.json: OK
+./results/digest_check_output.txt: OK
+./results/environment.json: OK
+./results/raw_classical.log: OK
+./results/raw_liboqs.log: OK
+./results/raw_pqclean.log: OK
+./results/run_log.txt: OK
+./results/size_table.csv: OK
+./results/size_table.md: OK
+./results/summary.txt: OK
+./results/timing_table.csv: OK
+./results/timing_table.md: OK
+./run_all.sh: OK
+./sources.md: OK
+./sources/NIST.FIPS.203.pdf: OK
+./sources/NIST.FIPS.204.pdf: OK
+./verify_digests.sh: OK
+verify_digests.sh: SHA256SUMS regenerated and verified
+run_all.sh: OK</pre>
+
+<h2>Reproduction</h2>
+<p class="mono">bash run_all.sh</p>
+<p>Regenerates every derived output offline from the vendored results
+JSON (<code>results/benchmark_*.json</code>), rebuilds this page, and
+verifies digests. Expected: exit 0, byte-identical outputs. See
+<code>REPRODUCTION.md</code> for the exact command and recorded
+result. To re-run the benchmarks themselves (not part of the offline
+reproduction — timings vary run to run), see
+<code>harness/build_benchmarks.sh</code> and
+<code>harness/run_benchmarks.sh</code>.</p>
+
+<h2>Files</h2>
+<ul>
+<li><code>results/benchmark_liboqs.json</code>,
+<code>results/benchmark_pqclean.json</code>,
+<code>results/benchmark_classical.json</code> — vendored raw benchmark
+results (JSON)</li>
+<li><code>results/raw_liboqs.log</code>,
+<code>results/raw_pqclean.log</code>,
+<code>results/raw_classical.log</code> — unedited raw console logs</li>
+<li><code>results/timing_table.csv</code> /
+<code>timing_table.md</code>, <code>results/size_table.csv</code> /
+<code>size_table.md</code> — derived tables</li>
+<li><code>results/cost_model.json</code> / <code>cost_model.csv</code> —
+derived consensus-path cost model</li>
+<li><code>results/summary.txt</code> — headline numbers in plain text</li>
+<li><code>results/environment.json</code> — host, toolchain, versions</li>
+<li><code>results/digest_check_output.txt</code>,
+<code>results/run_log.txt</code> — digest-check output, reproduction log</li>
+<li><code>harness/bench_liboqs.c</code>,
+<code>harness/bench_pqclean.c</code>,
+<code>harness/bench_classical.c</code> — benchmark drivers</li>
+<li><code>harness/build_benchmarks.sh</code>,
+<code>harness/run_benchmarks.sh</code> — build / run scripts</li>
+<li><code>call_sites.md</code> — measurement-to-call-site mapping</li>
+<li><code>remediation_assessment.md</code> — hybrid ML-DSA design,
+rotation/revocation, phased costs, forward-only activation, rollback,
+exposure-ranked priorities</li>
+<li><code>claim_evidence_index.md</code> — measured vs source-derived
+claims, separated, with file:line and output-file references</li>
+<li><code>sources.md</code> — primary sources and version pins</li>
+<li><code>sources/NIST.FIPS.203.pdf</code>,
+<code>sources/NIST.FIPS.204.pdf</code> — vendored standards</li>
+</ul>
+
+<h2>Limitations</h2>
+<ul>
+<li>Timings are for this host and toolchain only (AMD EPYC, ~1.5 GHz,
+gcc 13.3.0, -O2). They do not transfer to validator hardware; the
+ratios between schemes on one host are the portable part.</li>
+<li>liboqs uses its optimized AVX2 path; PQClean <code>clean</code> is
+portable C. A production deployment would use optimized code for both
+schemes; the PQClean numbers are a conservative upper bound.</li>
+<li>OpenSSL 3.5 was not measured (see the claim index): the system
+OpenSSL is 3.0.13, which has no native ML-KEM/ML-DSA.</li>
+<li>Cost-model network inputs (N=66, 2 proposal rounds) come from the
+sibling migration pack; they are labelled source-derived, not measured
+here.</li>
+<li>No ledger was compiled or run locally; no validation was forged
+or replayed against a live node.</li>
+</ul>
+</body>
+</html>
