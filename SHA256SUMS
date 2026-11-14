@@ -3,7 +3,7 @@
 f3a3f489943c8c72d7dbf96be505cb6e437697c20a9f3760bc643cc5913500f7  ./build_derived.py
 75d4358a3f22a3be8f25cfa5fde0fb2a4bf9027656861756ec810af6bdfbbd9e  ./call_sites.md
 1697934f14b0cd0b75a8662416f64fb2444ac00c8a10690f02d09cccf9edd8da  ./claim_evidence_index.md
-a198bbafe679d9b5268af9c393f3c89e9b4b0af1170e5a38d4ea390786e526fb  ./docs/index.html
+64e6dd5a95a2f0a15e0827daaa36c151a1cf99ac0da6627ee6ecb6e33932896a  ./docs/index.html
 58e72af00a04dc18eac0b6ab0bd6689105de317aceb19aaa08cf03db0bc3f7c2  ./harness/bench_classical.c
 76414d34dd7a11cb48b5d481a38b17fc9a5a31e3db2d9c316ad6c2084db9ea9b  ./harness/bench_liboqs.c
 01ea99439d67d404bc4667f3a5c84524a81124f0bd6df6d766da06d2d2c37f89  ./harness/bench_pqclean.c
