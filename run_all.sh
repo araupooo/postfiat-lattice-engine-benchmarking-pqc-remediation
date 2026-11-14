@@ -26,5 +26,5 @@ set -eu
 PACK_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 cd "$PACK_DIR"
 python3 build_derived.py
-./verify_digests.sh
+bash verify_digests.sh
 echo "run_all.sh: OK"
