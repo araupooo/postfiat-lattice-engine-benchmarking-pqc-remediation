@@ -1,5 +1,6 @@
 build_derived.py: OK (timing/size/cost tables, summary, docs/index.html)
 ./README.md: OK
+./REPRODUCTION.md: OK
 ./build_derived.py: OK
 ./call_sites.md: OK
 ./claim_evidence_index.md: OK
