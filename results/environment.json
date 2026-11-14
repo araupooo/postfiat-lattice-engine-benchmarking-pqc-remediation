@@ -1,0 +1,29 @@
+{
+  "os": "Linux htch-runtime 7.0.0-44-generic #1 SMP PREEMPT_DYNAMIC Fri Nov  6 01:23:31 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux",
+  "cpu_model": "AMD EPYC 9D25 126-Core Processor",
+  "cpu_count": 4,
+  "mem_total_kb": 8124900,
+  "kernel": "7.0.0-44-generic",
+  "gcc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "cmake": "cmake version 3.28.3",
+  "python": "3.12.3",
+  "openssl_system": "OpenSSL 3.0.13 30 Jan 2024 (Library: OpenSSL 3.0.13 30 Jan 2024)",
+  "liboqs": "0.16.0 (minimal build: ML-KEM-512/768/1024, ML-DSA-44/65/87 only; tarball sha256 162d5b510518ee5f285f82fa1f16402a885176e818bf1b1a4c3c91c9a2f01eae, verified byte-identical to github.com/open-quantum-safe/liboqs archive refs/tags/0.16.0)",
+  "pqclean_commit": "0586a824fc0d49df0b6b6e9179d8d15d06d0974f (2026-08-04; no release tag published upstream, pinned by commit)",
+  "fips203": "NIST FIPS 203, published August 13, 2024; sha256 fe1f12f32a7e44ec9fdebbf400cda843a40b506dee676725234dc6f7923b6cac",
+  "fips204": "NIST FIPS 204, published August 13, 2024; sha256 57239b9f84c03227eda3ca0991204dc7764c79af9ce2e6824eda774918d46b6b",
+  "cpu_flags": [
+    "ssse3",
+    "sse4_1",
+    "sse4_2",
+    "popcnt",
+    "aes",
+    "avx2",
+    "bmi2",
+    "avx512f",
+    "avx512dq",
+    "adx",
+    "sha_ni",
+    "avx512bw"
+  ]
+}
